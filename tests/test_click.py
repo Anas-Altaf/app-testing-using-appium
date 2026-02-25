@@ -1,24 +1,36 @@
-import time
-from selenium.webdriver.common.by import By
-
+from appium.webdriver.common.appiumby import AppiumBy
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from utils.driver import get_driver
+import time
 
-# 1. Launch app
-driver = get_driver()
+def test_sign_in_success():
+    driver = get_driver()
+    wait = WebDriverWait(driver, 20)
 
-# 2. Wait a few seconds for app to load
-time.sleep(2)  # You can replace with explicit waits later
+    # Locate fields
+    email_field = wait.until(
+        EC.element_to_be_clickable((AppiumBy.XPATH, "//android.widget.EditText[@hint='Username']"))
+    )
+    password_field = driver.find_element(AppiumBy.XPATH, "//android.widget.EditText[@hint='Password']")
 
-# 3. Find button by text
-# Example: In API Demos, there is a button with text "Accessibility"
-button_text = "Accessibility"
-button = driver.find_element(By.XPATH, f"//*[@text='{button_text}']")
+    # Enter credentials
+    email_field.send_keys("test@example.com")
+    password_field.send_keys("123456")
 
-# 4. Click the button
-button.click()
+    # Click Sign In
+    sign_in_button = wait.until(
+    EC.element_to_be_clickable(
+        (AppiumBy.XPATH, "//*[contains(@text,'Login')]")
+    )
+    )
 
-# 5. Print success
-print(f"Clicked button with text: {button_text}")
+    # # Wait 2–3 seconds for the next screen
+    # WebDriverWait(driver, 10).until(
+    #     EC.presence_of_element_located((AppiumBy.ACCESSIBILITY_ID, "Welcome to BikeX"))
+    # )
 
-# 6. Close app
-driver.quit()
+
+    time.sleep(10)
+
+    driver.quit()

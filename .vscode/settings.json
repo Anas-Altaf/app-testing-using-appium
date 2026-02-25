@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^Get-ChildItem \"C:\\\\Users\\\\anas\\\\\\.appium\\\\node_modules\\\\appium-flutter-driver\\\\\" -Recurse -Filter \"\\*\\.js\" \\| ForEach-Object \\{ Select-String -Path \\$_\\.FullName -Pattern \"findElOrEls\" \\} \\| Select-Object -First 20$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
