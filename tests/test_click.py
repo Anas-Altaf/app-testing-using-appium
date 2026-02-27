@@ -4,33 +4,38 @@ from selenium.webdriver.support import expected_conditions as EC
 from utils.driver import get_driver
 import time
 
+
 def test_sign_in_success():
     driver = get_driver()
     wait = WebDriverWait(driver, 20)
 
-    # Locate fields
-    email_field = wait.until(
-        EC.element_to_be_clickable((AppiumBy.XPATH, "//android.widget.EditText[@hint='Username']"))
-    )
-    password_field = driver.find_element(AppiumBy.XPATH, "//android.widget.EditText[@hint='Password']")
 
-    # Enter credentials
-    email_field.send_keys("test@example.com")
-    password_field.send_keys("123456")
-
-    # Click Sign In
-    sign_in_button = wait.until(
-    EC.element_to_be_clickable(
-        (AppiumBy.XPATH, "//*[contains(@text,'Login')]")
-    )
+    # Wait for fields
+    fields = wait.until(
+        EC.presence_of_all_elements_located(
+            (AppiumBy.CLASS_NAME, "android.widget.EditText")
+        )
     )
 
-    # # Wait 2–3 seconds for the next screen
-    # WebDriverWait(driver, 10).until(
-    #     EC.presence_of_element_located((AppiumBy.ACCESSIBILITY_ID, "Welcome to BikeX"))
-    # )
+    print("Fields found:", len(fields))
 
+    email_field = fields[0]
+    password_field = fields[1]
 
-    time.sleep(10)
+    # Enter data
+    # email_field.click()
+    email_field.clear()
+    email_field.send_keys("anasaltafprojects@gmail.com")
+
+    # password_field.click()
+    password_field.clear()
+    password_field.send_keys("Password@123")
+
+    # Click login
+    login_button = wait.until(
+        EC.element_to_be_clickable((AppiumBy.ACCESSIBILITY_ID, "Log In"))
+    )
+    login_button.click()
+    time.sleep(5)  # Wait for login to process
 
     driver.quit()
