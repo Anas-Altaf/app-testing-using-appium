@@ -1,0 +1,175 @@
+================================================================
+ASSIGNMENT: Version Control and Mobile Test Automation
+UPDATED FOR: Python + Appium + pytest (APK-based)
+================================================================
+
+Assignment Overview
+-------------------
+Before Starting:
+- Form a group of 2 students.
+- Create a private GitHub repository and add all group members.
+- Use proper Git workflow practices (Feature branches, Pull Requests, Code reviews).
+- Create GitHub Issues to track tasks.
+- Assign responsibilities equally among team members.
+- Maintain a professional folder structure.
+
+Objective:
+Students will design and implement a mobile test automation framework using:
+  - Python
+  - Appium (Python Client)
+  - pytest 
+  - Git for version control
+  - A real Android APK file for the application under test
+
+================================================================
+TASK 1: Git Repository Management & Workflow
+================================================================
+
+1. Repository Setup:
+   - Create a private GitHub repository.
+   - Add all group members as collaborators.
+   - Enable branch protection for the main branch.
+   - Enable pull request reviews.
+
+2. Branching Strategy:
+   Use a structured branching model:
+     main         → stable, production-ready code
+     develop      → integration branch
+     feature/xxx  → individual feature or test branches
+
+   Rules:
+   - No direct commits to main.
+   - All changes must go through Pull Requests.
+   - Each feature must be developed in a separate branch.
+   - Use meaningful commit messages (e.g., "feat: add login page object").
+
+3. Issue Tracking:
+   - Break the project into smaller tasks.
+   - Create GitHub Issues for each task.
+   - Assign issues to team members.
+   - Use labels: bug, enhancement, test, documentation.
+
+================================================================
+TASK 2: Appium Framework Setup (Python)
+================================================================
+
+Students must:
+- Set up a Python virtual environment (venv).
+- Install all dependencies via requirements.txt.
+- Configure Appium for Android automation using a local APK file.
+- Use UiAutomator2 as the automation engine.
+- Place your APK file inside the /drivers/ folder and name it app.apk.
+
+Required Tools:
+  - Python 3.9+
+  - Node.js (for Appium server)
+  - Appium 2.x (installed via npm: npm install -g appium)
+  - Appium UiAutomator2 driver (appium driver install uiautomator2)
+  - Android Studio + Emulator OR a real Android device with USB debugging ON
+  - ADB (Android Debug Bridge) — bundled with Android Studio
+
+================================================================
+TASK 3: Implement Page Object Model (POM)
+================================================================
+
+- Create a separate Python class (Page) for each screen of the app.
+- All element locators must be defined inside the relevant Page class.
+- All user actions (tap, type, swipe) must be methods inside the Page class.
+- Tests must NOT contain any locators directly — only Page method calls.
+- Follow OOP principles: inheritance, encapsulation.
+- All Page classes inherit from a shared BasePage class.
+
+Example structure:
+  pages/
+    base_page.py       ← shared driver methods
+    login_page.py      ← Login screen locators + actions
+    home_page.py       ← Home screen locators + actions
+    settings_page.py   ← Settings screen locators + actions
+    ... (one file per screen)
+
+================================================================
+TASK 4: Test Case Automation
+================================================================
+
+Automate at least 10 functional test cases.
+
+Each test must:
+  - Be written in a separate test function using pytest.
+  - Include at least one assertion (assert statement).
+  - Be fully independent (no shared state between tests).
+  - Use Page Object methods — no raw locators in test files.
+  - Have a clear, descriptive name: test_login_with_valid_credentials()
+
+Suggested test cases (adapt to your app):
+  1.  Verify app launches successfully
+  2.  Verify login with valid credentials
+  3.  Verify login with invalid credentials shows error
+  4.  Verify empty fields validation on login
+  5.  Verify successful logout
+  6.  Verify navigation between main screens
+  7.  Verify a form submission works correctly
+  8.  Verify search functionality returns results
+  9.  Verify UI elements are visible on a specific screen
+  10. Verify app handles back-navigation correctly
+
+================================================================
+TASK 5: Continuous Integration (CI)
+================================================================
+
+Set up a GitHub Actions pipeline (.github/workflows/ci.yml) that:
+  - Triggers on every push to main branch.
+  - Triggers on every Pull Request targeting main.
+  - Sets up Python environment.
+  - Installs all dependencies from requirements.txt.
+  - Builds/validates the project (lint check via flake8).
+  - Runs automated test cases (or reports gracefully if no device).
+  - Generates and uploads an HTML test report as an artifact.
+
+Note: Full end-to-end tests in CI require an Android emulator.
+      The CI pipeline must at minimum install dependencies and validate
+      the project structure. Emulator-based CI is a bonus.
+
+================================================================
+TASK 6: Documentation
+================================================================
+
+Include a README.md with:
+  1. Project Overview — what app is tested, what the framework does.
+  2. Tools & Technologies — Python, Appium, pytest, UiAutomator2, GitHub Actions.
+  3. Folder Structure — explain what each folder/file is for.
+  4. Prerequisites — Python version, Node, Appium, ADB, emulator setup.
+  5. Setup Instructions — step-by-step to get the project running locally.
+  6. How to Run Tests — exact commands to execute tests.
+  7. CI Workflow Explanation — what the pipeline does and when it runs.
+  8. Git Workflow Used — branch strategy, PR process, commit conventions.
+  9. Screenshots — test execution output + CI pipeline success.
+
+================================================================
+Submission Guidelines
+================================================================
+
+1. Submit the GitHub repository link.
+2. Ensure all commits are visible with meaningful messages.
+3. Ensure CI pipeline has at least one successful run.
+4. Include screenshots of:
+   - Successful test execution in terminal.
+   - pytest HTML report.
+   - CI pipeline green status on GitHub Actions.
+
+================================================================
+Evaluation Criteria
+================================================================
+
+  Git Workflow & Repository Management  →  30%
+  Framework Structure & Design          →  10%
+  Test Case Implementation              →  40%
+  Code Quality & Documentation          →  20%
+
+================================================================
+Bonus Marks (Optional)
+================================================================
+
+  - Parallel test execution using pytest-xdist (-n auto)
+  - Allure test report generation
+  - Dockerized Appium setup (Appium + Android emulator in Docker)
+
