@@ -1,0 +1,301 @@
+================================================================
+SETUP & USAGE INSTRUCTIONS
+Mobile Test Automation Framework — Python + Appium + pytest
+================================================================
+
+FOLDER STRUCTURE
+----------------
+mobile-test-framework/
+│
+├── drivers/                    ← Place your APK file here (name it app.apk)
+│
+├── config/
+│   ├── __init__.py
+│   └── config.py               ← Device caps, paths, timeouts
+│
+├── pages/
+│   ├── __init__.py
+│   ├── base_page.py            ← Shared driver helper methods
+│   ├── login_page.py           ← Login screen Page Object
+│   ├── home_page.py            ← Home screen Page Object
+│   └── ...                     ← One file per app screen
+│
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py             ← pytest fixtures (driver setup/teardown)
+│   ├── test_login.py
+│   ├── test_navigation.py
+│   └── ...                     ← One test file per feature area
+│
+├── utils/
+│   ├── __init__.py
+│   └── driver_manager.py       ← Appium driver initialization
+│
+├── reports/                    ← Auto-generated HTML reports go here
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml              ← GitHub Actions CI pipeline
+│
+├── .env                        ← Local environment variables (not committed)
+├── .gitignore
+├── requirements.txt            ← All Python dependencies
+├── setup.cfg                   ← pytest + flake8 configuration
+└── README.md
+
+
+================================================================
+STEP 1 — INSTALL PREREQUISITES
+================================================================
+
+1. Install Python 3.9 or higher
+   https://www.python.org/downloads/
+
+2. Install Node.js (LTS version)
+   https://nodejs.org/
+
+3. Install Appium 2.x globally
+   > npm install -g appium
+
+4. Install the UiAutomator2 driver for Appium
+   > appium driver install uiautomator2
+
+5. Install Android Studio
+   https://developer.android.com/studio
+   - During install, make sure to include:
+       Android SDK
+       Android Emulator
+       ADB (Android Debug Bridge)
+
+6. Set environment variables (add to your system PATH):
+   ANDROID_HOME = C:\Users\<you>\AppData\Local\Android\Sdk   (Windows)
+   ANDROID_HOME = ~/Library/Android/sdk                       (macOS)
+
+   Add to PATH:
+     %ANDROID_HOME%\platform-tools
+     %ANDROID_HOME%\emulator
+
+
+================================================================
+STEP 2 — PROJECT SETUP
+================================================================
+
+1. Clone your GitHub repository:
+   > git clone https://github.com/<your-org>/<your-repo>.git
+   > cd mobile-test-framework
+
+2. Create and activate a Python virtual environment:
+
+   Windows:
+   > python -m venv venv
+   > venv\Scripts\activate
+
+   macOS/Linux:
+   > python3 -m venv venv
+   > source venv/bin/activate
+
+3. Install Python dependencies:
+   > pip install -r requirements.txt
+
+4. Place your APK file:
+   Copy your Android APK into the drivers/ folder.
+   Rename it to:  app.apk
+
+5. (Optional) Create a .env file for local config overrides:
+   Create a file named .env in the project root:
+
+       APPIUM_HOST=127.0.0.1
+       APPIUM_PORT=4723
+       PLATFORM_VERSION=13.0
+       DEVICE_NAME=emulator-5554
+
+
+================================================================
+STEP 3 — START THE ANDROID EMULATOR
+================================================================
+
+Option A — Use Android Studio AVD Manager:
+  1. Open Android Studio → Device Manager
+  2. Create a virtual device (Pixel 6, API 33 recommended)
+  3. Click the Play button to start the emulator
+
+Option B — Start emulator from command line:
+  > emulator -avd <your_avd_name>
+
+Verify the device is visible to ADB:
+  > adb devices
+  (you should see: emulator-5554  device)
+
+
+================================================================
+STEP 4 — START APPIUM SERVER
+================================================================
+
+Open a NEW terminal window and run:
+  > appium
+
+You should see:
+  [Appium] Welcome to Appium v2.x
+  [Appium] Appium REST http interface listener started on 127.0.0.1:4723
+
+Leave this terminal running. Do not close it.
+
+
+================================================================
+STEP 5 — RUN THE TESTS
+================================================================
+
+Go back to your project terminal (with venv active):
+
+Run ALL tests:
+  > pytest tests/
+
+Run with HTML report:
+  > pytest tests/ --html=reports/report.html --self-contained-html
+
+Run a specific test file:
+  > pytest tests/test_login.py
+
+Run a specific test function:
+  > pytest tests/test_login.py::test_login_with_valid_credentials
+
+Run tests in parallel (bonus — requires pytest-xdist):
+  > pytest tests/ -n 2
+
+Run with Allure report (bonus):
+  > pytest tests/ --alluredir=reports/allure-results
+  > allure serve reports/allure-results
+
+Show verbose output:
+  > pytest tests/ -v
+
+Show print statements during test:
+  > pytest tests/ -s
+
+
+================================================================
+STEP 6 — VIEW THE TEST REPORT
+================================================================
+
+After running with --html flag, open the report:
+  > open reports/report.html         (macOS)
+  > start reports/report.html        (Windows)
+  Or simply double-click the file in your file explorer.
+
+
+================================================================
+CONFIGURATION REFERENCE (config/config.py)
+================================================================
+
+Setting              Default              Description
+───────────────────────────────────────────────────────────────
+APPIUM_HOST          127.0.0.1            Appium server IP
+APPIUM_PORT          4723                 Appium server port
+PLATFORM_VERSION     13.0                 Android OS version
+DEVICE_NAME          emulator-5554        ADB device ID
+APK_PATH             drivers/app.apk      Path to your APK file
+IMPLICIT_WAIT        10 seconds           Default element wait
+EXPLICIT_WAIT        20 seconds           WebDriverWait timeout
+
+Override any of these via the .env file without touching config.py.
+
+
+================================================================
+GIT WORKFLOW
+================================================================
+
+1. Never commit directly to main.
+
+2. Start a new feature or test:
+   > git checkout develop
+   > git pull origin develop
+   > git checkout -b feature/login-tests
+
+3. Make changes, then commit:
+   > git add .
+   > git commit -m "feat: add login page object and test cases"
+
+4. Push your branch:
+   > git push origin feature/login-tests
+
+5. Open a Pull Request on GitHub:
+   - Base: develop  ←  Compare: feature/login-tests
+   - Add a description linking the GitHub Issue (Closes #5)
+   - Request a review from your partner
+
+6. After review approval, merge the PR (Squash and Merge preferred).
+
+7. Delete the feature branch after merge.
+
+Commit Message Format:
+  feat:     new feature or test case
+  fix:      bug fix
+  refactor: code restructure without behavior change
+  docs:     README or comment updates
+  ci:       CI pipeline changes
+  chore:    dependency updates, config tweaks
+
+
+================================================================
+CI PIPELINE EXPLANATION (.github/workflows/ci.yml)
+================================================================
+
+The pipeline triggers on:
+  - Every push to main
+  - Every Pull Request targeting main
+
+Steps the pipeline runs:
+  1. Checkout code from GitHub
+  2. Set up Python 3.11 environment
+  3. Install dependencies from requirements.txt
+  4. Run flake8 linting to catch code quality issues
+  5. Validate project structure (check APK placeholder exists)
+  6. Run pytest (with --co flag to at minimum collect/validate tests)
+  7. Upload HTML report as a downloadable artifact
+
+Full device tests in CI require an Android emulator.
+The pipeline is configured to skip device tests gracefully
+if no emulator is available (useful for PR validation).
+
+
+================================================================
+REQUIREMENTS.TXT — DEPENDENCY EXPLANATION
+================================================================
+
+Package                   Purpose
+──────────────────────────────────────────────────────────────
+Appium-Python-Client      Appium WebDriver for Python
+selenium                  Base WebDriver (Appium depends on it)
+pytest                    Test runner (replaces TestNG)
+pytest-html               Generates HTML test reports
+pytest-xdist              Parallel test execution (bonus)
+pytest-retry              Auto-retry flaky tests
+allure-pytest             Allure report integration (bonus)
+python-dotenv             Load .env config variables
+Pillow                    Screenshot handling utilities
+
+
+================================================================
+COMMON ISSUES & FIXES
+================================================================
+
+Problem: adb devices shows nothing
+Fix:     Enable USB Debugging on device, or start the emulator first.
+
+Problem: Appium says "Could not find a connected Android device"
+Fix:     Run `adb devices` — device must show as "device" not "offline".
+
+Problem: App not found / APK error
+Fix:     Confirm app.apk is in the drivers/ folder. Check the path in config.py.
+
+Problem: Element not found / NoSuchElementException
+Fix:     Increase IMPLICIT_WAIT in config.py. Use Appium Inspector to verify locators.
+
+Problem: Port 4723 already in use
+Fix:     Run `npx appium --port 4724` and update APPIUM_PORT in .env.
+
+Problem: Tests pass locally but fail in CI
+Fix:     CI has no device — use `pytest --collect-only` in CI to validate without running.
+
+
+================================================================
