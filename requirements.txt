@@ -1,5 +1,8 @@
 Appium-Python-Client
-pytest
-pytest-xdist
-pytest-html
 selenium
+pytest
+pytest-html
+pytest-xdist
+python-dotenv
+flake8
+allure-pytest
