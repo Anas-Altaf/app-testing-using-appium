@@ -1,22 +1,27 @@
+"""
+Driver Manager — Appium WebDriver initialization.
+All capabilities are pulled from config.config.
+"""
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
-import os
+from config import config
+
 
 def get_driver():
-    # Absolute path to your APK
-    apk_path = os.path.abspath("./apk.apk")
-
+    """Create and return a configured Appium WebDriver instance."""
     options = UiAutomator2Options()
-    options.platform_name = "Android"
-    options.device_name = "emulator-5554" # Change this to your device name or emulator ID
-    options.automation_name = "UiAutomator2"
-    options.app = apk_path   # Appium will auto-install this APK
-    # setting timeout to 30 seconds, uiautomator2ServerInstallTimeout
-    options.uiautomator2_server_install_timeout = 60000
-
-    # Auto grant permissions
+    options.platform_name = config.PLATFORM_NAME
+    options.device_name = config.DEVICE_NAME
+    options.automation_name = config.AUTOMATION_NAME
+    options.app = config.APK_PATH
+    # Package and activity can be set if needed, e.g.:
+    # options.app_package = "com.quick_alert"
+    # options.app_activity = "com.quick_alert.MainActivity"
+    options.uiautomator2_server_install_timeout = config.UIAUTOMATOR2_INSTALL_TIMEOUT
     options.auto_grant_permissions = True
-    
+# No reset
+    # options.no_reset = True
 
-    driver = webdriver.Remote("http://localhost:4723", options=options)
+    driver = webdriver.Remote(config.APPIUM_URL, options=options)
+    driver.implicitly_wait(config.IMPLICIT_WAIT)
     return driver
